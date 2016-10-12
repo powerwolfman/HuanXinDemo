@@ -11,6 +11,8 @@ import android.widget.TextView;
 
 import com.lifucong.apphx.contect.HxContectListFragment;
 import com.lifucong.apphx.conversation.HxConversationListFragment;
+import com.lifucong.huanxindemo.books.BooksFragment;
+import com.lifucong.huanxindemo.user.UserFragment;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -51,13 +53,13 @@ public class HomeActivity extends AppCompatActivity implements ViewPager.OnPageC
         public Fragment getItem(int position) {
             switch (position){
                 case 0:
-                    return new HxContectListFragment();
+                    return new BooksFragment();
                 case 1:
                     return new HxContectListFragment();
                 case 2:
                     return new HxConversationListFragment();
                 case 3:
-                    return new HxContectListFragment();
+                    return new UserFragment();
                 default:
                     throw new RuntimeException();
             }

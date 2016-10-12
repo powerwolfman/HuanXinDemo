@@ -23,6 +23,7 @@ public class HxBaseApplication extends Application {
     private void initEaseUI() {
         EMOptions options=new EMOptions();
         options.setAutoLogin(false);//关闭自动登录
+        options.setAcceptInvitationAlways(true); // 自动同意
         EMClient.getInstance().init(this,options);
         //关闭环信日志
         EMClient.getInstance().setDebugMode(false);

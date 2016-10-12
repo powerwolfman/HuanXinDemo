@@ -1,7 +1,12 @@
 package com.lifucong.apphx.contect;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.ListAdapter;
+import android.widget.Toast;
 
 import com.hyphenate.EMContactListener;
 import com.hyphenate.chat.EMClient;
@@ -9,6 +14,8 @@ import com.hyphenate.chat.EMContactManager;
 import com.hyphenate.easeui.domain.EaseUser;
 import com.hyphenate.easeui.ui.EaseContactListFragment;
 import com.hyphenate.exceptions.HyphenateException;
+import com.lifucong.apphx.R;
+import com.lifucong.apphx.contect.search.AddContactActivity;
 
 import java.util.HashMap;
 import java.util.List;
@@ -20,8 +27,8 @@ import java.util.Map;
 
 public class HxContectListFragment extends EaseContactListFragment implements EMContactListener {
 
-    private EMContactManager mEMContactManager;
-    private List<String> contacts;
+    private EMContactManager mEMContactManager;// 联系人管理APi
+    private List<String> contacts;// 联系人集合(从环信服务器获取到的)
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -45,6 +52,32 @@ public class HxContectListFragment extends EaseContactListFragment implements EM
 
     private void customUI() {
         super.hideTitleBar();
+        setHeaderView();
+    }
+
+    private void setHeaderView() {
+        View headerView = LayoutInflater.from(getContext())
+                .inflate(R.layout.partial_hx_contact_list_header, listView, false);
+        // “添加新朋友”view
+        View addContacts = headerView.findViewById(R.id.layout_add_contacts);
+        addContacts.setOnClickListener(new View.OnClickListener() {
+            @Override public void onClick(View view) {
+                Intent intent = new Intent(getContext(), AddContactActivity.class);
+                startActivity(intent);
+            }
+        });
+        // "邀请和通知"view
+        View notifications = headerView.findViewById(R.id.layout_notifications);
+        notifications.setOnClickListener(new View.OnClickListener() {
+            @Override public void onClick(View view) {
+                Toast.makeText(getContext(), "邀请和通知", Toast.LENGTH_SHORT).show();
+            }
+        });
+        ListAdapter adapter = listView.getAdapter();
+        listView.setAdapter(null);
+        // note: 在Android4.4之前，此方法只能在ListView设置适配器之前调用
+        listView.addHeaderView(headerView);
+        listView.setAdapter(adapter);
     }
 
     private void asyncGetContactFromServer() {
