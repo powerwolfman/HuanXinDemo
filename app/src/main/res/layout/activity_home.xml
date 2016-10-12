@@ -8,7 +8,7 @@
 
     <fragment
         android:id="@+id/contactListFragment"
-        android:name="com.feicuiedu.apphx.contact.HxContactListFragment"
+        android:name="com.lifucong.apphx.contect.HxContectListFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 </RelativeLayout>

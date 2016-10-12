@@ -10,7 +10,10 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
+import com.hyphenate.chat.EMClient;
+import com.hyphenate.exceptions.HyphenateException;
 import com.lifucong.huanxindemo.R;
 
 import butterknife.BindView;
@@ -56,6 +59,68 @@ public class RegisterFragment extends DialogFragment {
     }
 
     @OnClick(R.id.button_confirm)
-    public void onClick() {
+    public void register() {
+        String username=editUsername.getText().toString().trim();
+        String password=editPassword.getText().toString().trim();
+        handleRegister(username,password);
+    }
+
+    private void handleRegister(final String username,final String password){
+        //核心Api
+        //是不是有網絡連接呢？？？应该是有！能在这里使用，你不怕ANR？？
+        //这样做？视图表现都没有？
+
+        //开始Loading视图
+        startLoading();
+        //执行注册api
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    EMClient.getInstance().createAccount(username,password);
+                    //未出现异常，表示成功，开始做一些视图上的工作
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            stopLoading();
+                            showRegisterSuccess();
+                            dismiss();
+                        }
+                    });
+                } catch (final HyphenateException e) {
+                    //出现异常，表示失败，开始做一些视图上的工作
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            stopLoading();
+                            showRegisterFail(e.getDescription());
+                        }
+                    });
+                }
+            }
+        }).start();
+    }
+
+    public void startLoading(){
+        setCancelable(false);
+        buttonConfirm.setVisibility(View.INVISIBLE);
+        progressBar.setVisibility(View.VISIBLE);
+    }
+
+    public void stopLoading(){
+        setCancelable(true);
+        buttonConfirm.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.INVISIBLE);
+    }
+
+    //注册成功视图
+    public void showRegisterSuccess(){
+        Toast.makeText(getContext(), R.string.user_register_success, Toast.LENGTH_SHORT).show();
+    }
+
+    //注册失败视图
+    public void showRegisterFail(String msg){
+        String info=getString(R.string.user_error_register_fail,msg);
+        Toast.makeText(getContext(), info, Toast.LENGTH_SHORT).show();
     }
 }
